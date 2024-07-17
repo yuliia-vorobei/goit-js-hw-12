@@ -16,7 +16,7 @@ export let perPage = 15;
 export let page = 1;
 
 formInput.addEventListener('submit', submitHandler);
-export function submitHandler(event) {
+export async function submitHandler(event) {
   event.preventDefault();
   const form = event.currentTarget;
   inputValue = form.elements.text.value.toLowerCase();
@@ -32,38 +32,46 @@ export function submitHandler(event) {
     return;
   }
 
-  getImages(inputValue, page, perPage)
-    .then(images => {
-      showLoader();
-      if (images.total !== 0) {
-        hideLoader();
-        gallery.innerHTML = '';
-        gallery.insertAdjacentHTML('beforeend', getGallery(images));
-        lightbox = new SimpleLightbox('.gallery a', {});
-        lightbox.refresh();
-        loadBtn.style.visibility = 'visible';
-      } else {
-        hideLoader();
-        gallery.innerHTML = '';
-        iziToast.show({
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          messageColor: 'black',
-          color: 'red',
-          position: 'topRight',
-        });
-      }
-    })
-    .catch(err => console.log(err))
-    .finally(() => formInput.reset());
+  showLoader();
+  let images = await getImages(inputValue, page, perPage);
+  console.log(images);
+  if (images.total !== 0) {
+    hideLoader();
+    gallery.innerHTML = '';
+    gallery.insertAdjacentHTML('beforeend', getGallery(images));
+    lightbox = new SimpleLightbox('.gallery a', {});
+    lightbox.refresh();
+    loadBtn.style.visibility = 'visible';
+  } else {
+    hideLoader();
+    gallery.innerHTML = '';
+    iziToast.show({
+      message:
+        'Sorry, there are no images matching your search query. Please try again!',
+      messageColor: 'black',
+      color: 'red',
+      position: 'topRight',
+    });
+  }
 }
 
 export function showLoader() {
   loader.style.visibility = 'visible';
+}
+
+export function showBottomLoader() {
   bottomLoader.style.visibility = 'visible';
 }
 
 export function hideLoader() {
   loader.style.visibility = 'hidden';
   bottomLoader.style.visibility = 'hidden';
+}
+
+export function hideLoadBtn() {
+  loadBtn.style.visibility = 'hidden';
+}
+
+export function showLoadBtn() {
+  loadBtn.style.visibility = 'visible';
 }
