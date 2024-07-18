@@ -1,4 +1,4 @@
-export function getGallery(images) {
+export function renderGallery(images) {
   return images.hits
     .map(
       ({
