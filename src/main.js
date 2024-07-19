@@ -10,7 +10,7 @@ const loader = document.querySelector('.loader');
 const bottomLoader = document.querySelector('.bottom');
 const loadBtn = document.querySelector('.load');
 const gallery = document.querySelector('.gallery');
-let lightbox;
+let lightbox = new SimpleLightbox('.gallery a', {});
 let inputValue = '';
 let perPage = 15;
 let page = 1;
@@ -22,6 +22,7 @@ async function submitHandler(event) {
   event.preventDefault();
   const form = event.currentTarget;
   inputValue = form.elements.text.value.toLowerCase();
+  form.reset();
   page = 1;
   if (inputValue === '') {
     iziToast.show({
@@ -41,7 +42,6 @@ async function submitHandler(event) {
       hideLoader();
       gallery.innerHTML = '';
       gallery.insertAdjacentHTML('beforeend', renderGallery(images));
-      lightbox = new SimpleLightbox('.gallery a', {});
       lightbox.refresh();
       loadBtn.style.visibility = 'visible';
     } else {
@@ -70,7 +70,6 @@ export async function loadHandler(event) {
     const images = await getImages(inputValue, page, perPage);
     hideLoader();
     gallery.insertAdjacentHTML('beforeend', renderGallery(images));
-    lightbox = new SimpleLightbox('.gallery a', {});
     lightbox.refresh();
 
     if (page * perPage > images.totalHits) {
